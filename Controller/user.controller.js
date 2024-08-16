@@ -1,6 +1,7 @@
 const UserModel = require("../Models/user.model.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
 exports.getUser = async (req, res) => {
   try {
     const users = await UserModel.find({});
@@ -106,7 +107,7 @@ exports.userLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
     const findUser = await UserModel.findOne({
-      email: email,
+      email: email.toLowerCase(),
     });
 
     if (findUser) {
@@ -137,6 +138,10 @@ exports.userLogin = async (req, res) => {
         }
       });
     } else {
+      res.status(404).json({
+        success: false,
+        messsage: "User with this email does not exist !!",
+      });
       console.log("user with this email id does not exist");
     }
   } catch (error) {
